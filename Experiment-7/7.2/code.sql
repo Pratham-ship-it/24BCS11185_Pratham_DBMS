@@ -1,0 +1,41 @@
+CREATE TABLE ORDERS (
+    ORDER_ID NUMBER PRIMARY KEY,
+    AMOUNT NUMBER(10,2)
+);
+
+INSERT INTO ORDERS VALUES (1, 5000);
+INSERT INTO ORDERS VALUES (2, 15000);
+INSERT INTO ORDERS VALUES (3, 25000);
+INSERT INTO ORDERS VALUES (4, 8000);
+INSERT INTO ORDERS VALUES (5, 12000);
+
+COMMIT;
+
+DECLARE
+    CURSOR order_cursor IS
+        SELECT ORDER_ID, AMOUNT
+        FROM ORDERS;
+
+    V_ORDER_ID ORDERS.ORDER_ID%TYPE;
+    V_AMOUNT ORDERS.AMOUNT%TYPE;
+
+BEGIN
+    OPEN order_cursor;
+
+    FETCH order_cursor INTO V_ORDER_ID, V_AMOUNT;
+
+    WHILE order_cursor%FOUND LOOP
+
+        IF V_AMOUNT > 10000 THEN
+            DBMS_OUTPUT.PUT_LINE(
+                'Order ID: ' || V_ORDER_ID || ' - High Value'
+            );
+        END IF;
+
+        FETCH order_cursor INTO V_ORDER_ID, V_AMOUNT;
+
+    END LOOP;
+
+    CLOSE order_cursor;
+END;
+/
